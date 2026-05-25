@@ -22,6 +22,22 @@ def keep_alive():
 TOKEN = '8989199216:AAE2FvkRf4t78a5Jk8JZ-fFQcW3zCQ8bvn0' # আপনার টোকেনটি এখানে দিন
 bot = telebot.TeleBot(TOKEN)
 ADMIN_USERNAME = "@Rakib4545" # আপনার ইউজারনেম
+# এই অংশটুকু ফাইলের উপরের দিকে বসান
+tasks = [
+    {
+        'id': 1, 
+        'text': '🔥 ১০০ পয়েন্ট বোনাস পেতে নিচের লিঙ্কে ক্লিক করে ১০ সেকেন্ড অপেক্ষা করুন।', 
+        'link': 'https://shrinkme.click/2NfYmRso', 
+        'reward': 100
+    },
+    {
+        'id': 2, 
+        'text': '✅ এই সহজ অফারটি পূরণ করে ২০০ পয়েন্ট নিন।', 
+        'link': 'https://singingfiles.com/show.php?l=0&u=2529780&id=36521', 
+=...',
+        'reward': 200
+    }
+]
 
 # ডাটাবেজ সেটআপ
 def get_db_connection():
@@ -52,6 +68,10 @@ def start(message):
     
     conn = get_db_connection()
     cursor = conn.cursor()
+        # এই বাটনটি অন্য বাটনগুলোর সাথে যোগ করুন
+    btn_task = types.KeyboardButton('📋 Tasks')
+    markup.add(btn_task)
+    
     cursor.execute("SELECT * FROM users WHERE user_id=?", (user_id,))
     user = cursor.fetchone()
 
@@ -81,6 +101,13 @@ def handle_msg(message):
     data = cursor.fetchone()
 
     if message.text == '💰 Balance':
+            # এই অংশটুকু elif message.text == '💰 Balance': এর ঠিক নিচে বসাতে পারেন
+    elif message.text == '📋 Tasks':
+        bot.send_message(user_id, "👇 নিচের টাস্কগুলো সম্পন্ন করে আয় করুন:")
+        for task in tasks:
+            task_text = f"📝 {task['text']}\n🔗 লিঙ্ক: {task['link']}\n🎁 পুরস্কার: {task['reward']} পয়েন্ট"
+            bot.send_message(user_id, task_text)
+            
         bot.send_message(user_id, f"💵 ব্যালেন্স: {data[1]} টাকা")
     elif message.text == '🎁 Daily Bonus':
         if data[3] == 0:
