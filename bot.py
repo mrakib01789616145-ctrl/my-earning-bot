@@ -19,7 +19,7 @@ def keep_alive():
     t.start()
 
 # আপনার তথ্য
-TOKEN = '8989199216:AAFdhvzxPAia7SXodxyF7xCXqYCEBiye2fk' # আপনার টোকেনটি এখানে দিন
+TOKEN = '8989199216:AAE2FvkRf4t78a5Jk8JZ-fFQcW3zCQ8bvn0' # আপনার টোকেনটি এখানে দিন
 bot = telebot.TeleBot(TOKEN)
 ADMIN_USERNAME = "@Rakib4545" # আপনার ইউজারনেম
 
