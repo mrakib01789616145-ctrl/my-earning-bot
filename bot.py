@@ -33,15 +33,14 @@ tasks = [
     {
         'id': 2, 
         'text': '✅ এই সহজ অফারটি পূরণ করে ২০০ পয়েন্ট নিন।', 
-        'link': 'https://singingfiles.com/show.php?l=0&u=2529780&id=36521', 
-=...',
+        'link': 'https://singingfiles.com/show.php?l=0&u=2529780&id=36521=',
         'reward': 200
     }
 ]
 
 # ডাটাবেজ সেটআপ
 def get_db_connection():
-    conn = sqlite3.connect('earning.db', check_same_thread=False)
+    conn = sqlite3.connect('earning.db check_same_thread=False)
     return conn
 
 def init_db():
