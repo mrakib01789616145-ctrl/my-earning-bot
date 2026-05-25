@@ -4,8 +4,8 @@ from flask import Flask
 from threading import Thread
 import time
 
-# ১. আপনার তথ্য
-TOKEN = '8989199216:AAE2FvkRf4t78a5Jk8JZ-fFQc'
+# ১. আপনার তথ্য (এখানে অবশ্যই আপনার সঠিক টোকেনটি বসাবেন)
+TOKEN = '8989199216:AAE2FvkRf4t78a5Jk8JZ-fFQcW3zCQ8bvn0' 
 bot = telebot.TeleBot(TOKEN)
 ADMIN_USERNAME = "@Rakib4545"
 
@@ -75,23 +75,20 @@ def start(message):
     conn.close()
     bot.send_message(user_id, "স্বাগতম! আমাদের বট থেকে কাজ করে প্রতিদিন টাকা আয় করুন।", reply_markup=main_menu())
 
-# ৬. মেসেজ হ্যান্ডলার (বাটন ছাড়া অন্য মেসেজ আসলে ডিলিট হবে)
+# ৬. মেসেজ হ্যান্ডলার (অন্য মেসেজ ডিলিট করবে)
 @bot.message_handler(func=lambda message: True)
 def handle_msg(message):
     user_id = str(message.chat.id)
     text = message.text
     valid_buttons = ['💰 Balance', '🎁 Daily Bonus', '👥 Refer & Earn', '📋 Tasks', '💳 Withdraw']
 
-    # যদি মেসেজটি বাটন লিস্টে না থাকে, তবে সেটি ডিলিট করে দাও
     if text not in valid_buttons:
         try:
             bot.delete_message(user_id, message.message_id)
-            # ইউজারকে সতর্ক করার জন্য একটি মেসেজ পাঠিয়ে ২ সেকেন্ড পর সেটিও ডিলিট করে দেওয়া যেতে পারে
-            warning = bot.send_message(user_id, "❌ শুধু বাটন ব্যবহার করুন! অন্য মেসেজ দেওয়া নিষেধ।")
+            warning = bot.send_message(user_id, "❌ শুধু বাটন ব্যবহার করুন!")
             time.sleep(2)
             bot.delete_message(user_id, warning.message_id)
-        except:
-            pass
+        except: pass
         return
 
     conn = get_db_connection()
@@ -105,13 +102,11 @@ def handle_msg(message):
 
     if text == '💰 Balance':
         bot.send_message(user_id, f"💵 আপনার বর্তমান ব্যালেন্স: {data[1]} টাকা")
-    
     elif text == '📋 Tasks':
         bot.send_message(user_id, "👇 নিচের টাস্কগুলো সম্পন্ন করে আয় করুন:")
         for task in tasks:
             task_text = f"📝 {task['text']}\n🔗 লিঙ্ক: {task['link']}\n🎁 পুরস্কার: {task['reward']} পয়েন্ট"
             bot.send_message(user_id, task_text)
-            
     elif text == '🎁 Daily Bonus':
         if data[3] == 0:
             cursor.execute("UPDATE users SET balance = balance + 2.0, daily_claimed = 1 WHERE user_id = ?", (user_id,))
@@ -119,25 +114,21 @@ def handle_msg(message):
             bot.send_message(user_id, "✅ আপনি আজকের ২ টাকা বোনাস পেয়েছেন!")
         else:
             bot.send_message(user_id, "❌ আপনি আজ অলরেডি বোনাস নিয়েছেন।")
-            
     elif text == '👥 Refer & Earn':
         bot_username = bot.get_me().username
         refer_link = f"https://t.me/{bot_username}?start={user_id}"
-        bot.send_message(user_id, f"👥 প্রতি রেফারে পাবেন ৫ টাকা।\n🔗 আপনার রেফার লিঙ্ক: {refer_link}")
-        
+        bot.send_message(user_id, f"👥 আপনার রেফার লিঙ্ক: {refer_link}")
     elif text == '💳 Withdraw':
         if data[1] >= 50:
-            bot.send_message(user_id, f"💸 উইথড্র করার জন্য আপনার তথ্যসহ অ্যাডমিনকে মেসেজ দিন: {ADMIN_USERNAME}")
+            bot.send_message(user_id, f"💸 উইথড্রর জন্য অ্যাডমিনকে মেসেজ দিন: {ADMIN_USERNAME}")
         else:
-            bot.send_message(user_id, f"❌ সর্বনিম্ন ৫০ টাকা প্রয়োজন। আপনার ব্যালেন্স: {data[1]} টাকা")
-
+            bot.send_message(user_id, f"❌ সর্বনিম্ন ৫০ টাকা প্রয়োজন। ব্যালেন্স: {data[1]} টাকা")
     conn.close()
 
 # ৭. রেন্ডার সার্ভার
 app = Flask('')
 @app.route('/')
 def home(): return "Bot is running!"
-
 def run(): app.run(host='0.0.0.0', port=8080)
 def keep_alive(): Thread(target=run).start()
 
